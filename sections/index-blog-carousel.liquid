@@ -1,0 +1,128 @@
+<div class="container">
+	<div class="row">
+		{%- assign section_blog = blogs[section.settings.section_blog] -%}
+		<div class="blog_block col-sm-12">
+			<div class="blog_slider swiper-container" id="blog_slider_{{ section.id }}">
+				<h2 class="section_heading">{{ section.settings.blog_title | escape }}</h2>
+
+
+				<div class="swiper-wrapper">
+
+					{% for article in section_blog.articles limit: section.settings.section_blog_limit %}
+						{% if article.image.size > 0 %}
+							{% assign no_image = false %}
+						{% else %}
+							{% assign no_image = true %}
+						{% endif %}
+						<div class="article_item swiper-slide{% if no_image %} no_image{% endif %}">
+
+							<div class="layer_2">
+								<div class="blog_article_content">
+									<h3 class="article_title"><a href="{{ article.url }}">{{ article.title | truncatewords: 11 }}</a></h3>
+
+									<p class="article_content">
+										{{ article.content | strip_html | truncatewords: 40 }}						
+									</p>
+
+									<a class="btn article_btn {% if section.settings.text_position == 'overlay' %}btn_inverted{% endif %}" href="{{ article.url }}">{{ 'blog.articles.read_more' | t }}</a>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+
+				</div>
+				<div id="blog_slider_prev_{{ section.id }}" class="swiper_btn swiper_btn__prev"></div>
+				<div id="blog_slider_next_{{ section.id }}" class="swiper_btn swiper_btn__next"></div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+
+{% schema %}
+{
+	"name": "Blog with carousel",
+	"class": "section section_homepage section_blog-with-carousel",
+	"settings": [
+		
+		
+		{
+	        "type": "header",
+	        "content": "Blog block"
+	    },
+	    {
+			"type": "text",
+			"id": "blog_title",
+			"label": "Blog block title",
+			"default": "Latest from the blog"
+		},
+		{
+			"type": "blog",
+			"id": "section_blog",
+			"label": "Blog"
+		},
+		{
+			"type": "checkbox",
+			"id": "blog_author",
+			"label": "Show author"
+		},
+		
+		{
+			"type": "select",
+			"id": "section_blog_limit",
+			"label": "Show posts",
+			"default": "3",
+			"options": [
+				{
+					"value": "3",
+					"label": "3"
+				},
+				{
+					"value": "6",
+					"label": "6"
+				}
+			]
+		}
+		
+	],
+	"presets": [
+		{
+			"name": "Blog with carousel",
+			"category": "Blog"
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+
+jQuery(document).ready(function($) {
+	$('.blog_slider').each(function(i) {
+
+		var sliderId = '#' + $(this).attr('id');
+		var sliderVar = $(this).attr('id');
+		var sliderPrev = '#blog_slider_prev_' + sliderVar.replace('blog_slider_', '');
+		var sliderNext = '#blog_slider_next_' + sliderVar.replace('blog_slider_', '');
+	
+
+		var sliderBlog = new Swiper( sliderId, {
+			effect: 'slide',
+			loop: true,
+			speed: 500,
+
+			prevButton: sliderPrev,
+			nextButton: sliderNext,
+
+		});
+
+		$(window).on('load', function() {
+			sliderBlog.onResize(); // updating swiper after loading
+		});
+
+	});
+
+});
+
+{% endjavascript %}

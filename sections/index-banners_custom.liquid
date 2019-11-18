@@ -1,0 +1,151 @@
+<div class="row">
+	{% for block in section.blocks %}
+		{% case block.type %}
+			{% when 'big' %}
+				{% case section.settings.section_height %}
+					{% when 'small'  %}{%- assign img_size = '1024x565' -%}
+					{% when 'medium' %}{%- assign img_size = '1024x972' -%}
+					{% when 'large'  %}{%- assign img_size = '1024x1038' -%}
+				{% endcase %}
+
+				<div class="col-sm-6 banner_{{ block.type }}">
+					<div class="banner_item">
+						{% if block.settings.item_img.size > 0 %}
+							<div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }}" style="background-image: url( {{ block.settings.item_img | img_url: img_size, crop: 'center' }} );"></div>
+						{% else %}
+							<div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }}">
+								{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+							</div>
+						{% endif %}
+						
+						<div class="banner_caption position_{{ block.settings.caption_position }}">  
+							<div class="caption_text">
+								{% if block.settings.item_subtitle.size > 0 %}
+									<h4>{{ block.settings.item_subtitle }}</h4>
+								{% endif %}
+
+								{% if block.settings.item_title.size > 0 %}
+									<h3>{{ block.settings.item_title }}</h3>
+								{% endif %}
+
+								{% if block.settings.item_text.size > 0 %}
+									<p class="banner_text">{{ block.settings.item_text }}</p>
+								{% endif %}
+
+								{% if block.settings.item_link.size > 0 and block.settings.button_text.size > 0 %}
+									<a class="btn banner_btn" href="{{ block.settings.item_link }}">{{ block.settings.button_text }}</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>		
+
+		{% endcase %}
+	{% endfor %}
+</div>
+
+{% schema %}
+{
+	"name": "Banners Custom",
+	"class": "section section_homepage section_banners_custom",
+	"max_blocks": 4,
+	"settings": [
+		{
+			"type": "select",
+			"id": "section_height",
+			"label": "Section height",
+			"options": [
+				{
+					"label": "Small (565px)",
+					"value": "small"
+				},
+				{
+					"label": "Medium (972px)",
+					"value": "medium"
+				},
+				{
+					"label": "Large (1038px)",
+					"value": "large"
+				}
+			]
+		}
+	],
+	"blocks": [
+
+		// BIG BANNER  //////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "big",
+			"name": "Big banner(50%)",
+			"limit": 2,
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "item_img",
+					"label": "Banner image"
+				},
+				{
+					"type": "select",
+					"id": "caption_position",
+					"label": "Caption position",
+					"options": [
+						{
+							"label": "Left",
+							"value": "left"
+						},
+						{
+							"label": "Right",
+							"value": "right"
+						},
+						{
+							"label": "Center",
+							"value": "center"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "item_subtitle",
+					"label": "Caption subtitle"
+				},
+				{
+					"type": "text",
+					"id": "item_title",
+					"label": "Caption title"
+				},
+				{
+					"type": "text",
+					"id": "item_text",
+					"label": "Caption text"
+				},
+				{
+					"type": "url",
+					"id": "item_link",
+					"label": "Link",
+					"info": "Optional"
+				},
+				{
+					"type": "text",
+					"id": "button_text",
+					"label": "Button text"
+				}
+			]
+		}
+
+	],
+	"presets": [
+		{
+			"name": "Banners",
+			"category": "Image",
+			"blocks": [
+				{
+					"type": "big"
+				},
+				{
+					"type": "big"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
